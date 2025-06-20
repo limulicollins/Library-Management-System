@@ -12,6 +12,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from db_config import get_connection
 from members import MembersPage
+from books import BooksPage
 
 class SidebarButton(QPushButton):
     def __init__(self, icon_path, text):
@@ -178,10 +179,10 @@ class BarChartCanvas(FigureCanvas):
 class Dashboard(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Coddy Library")
+        self.setWindowTitle("Coddy Library Management System")
         self.resize(1200,800)
         self.setMinimumSize(1000,700)
-        self.setStyleSheet("background-color: #6d3f0a;")
+        self.setStyleSheet("background-color: #0a0f2c;")
 
         main_widget = QWidget()
         main_layout = QHBoxLayout()
@@ -223,7 +224,8 @@ class Dashboard(QMainWindow):
         # Stack widget to hold different views
         self.stack = QStackedWidget()
         self.stack.addWidget(self.create_dashboard_page())  # index 0
-        self.stack.addWidget(MembersPage())  # index 1
+        self.stack.addWidget(MembersPage()) 
+        self.stack.addWidget(BooksPage()) # index 1
 
         main_layout.addWidget(sidebar_frame)
         main_layout.addWidget(self.stack)
