@@ -12,8 +12,9 @@ from dashboard import Dashboard
 class LoginWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Coddy Library Management System")
-        self.setGeometry(300, 200, 800, 400)
+        self.setWindowTitle("📚 Coddy Library Management System 📚")
+        self.resize(1200, 800)
+        self.minimumSize = (1000, 700)
         self.setup_ui()
 
     def setup_ui(self):
@@ -79,9 +80,9 @@ class LoginWindow(QWidget):
 """)
 
         image_label = QLabel()
-        pixmap = QPixmap("assets/images/login.jpg").scaled(400, 400, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
+        pixmap = QPixmap("assets/images/login.jpg").scaled(500, 800, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
         image_label.setPixmap(pixmap)
-        image_label.setFixedWidth(400)
+        image_label.setFixedWidth(600)
 
         form_layout = QVBoxLayout()
         form_layout.setContentsMargins(40, 60, 40, 40)

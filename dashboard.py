@@ -1,11 +1,12 @@
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QLabel, QPushButton, QLineEdit, QTableWidget, QTableWidgetItem,
-    QFrame, QSizePolicy, QStackedWidget, QTextEdit, QFileDialog, QComboBox, QDateEdit
+    QFrame, QSizePolicy, QStackedWidget
 )
-from PyQt5.QtGui import QColor, QFont, QIcon, QPixmap
-from PyQt5.QtCore import Qt, QSize, QDate
+from PyQt5.QtGui import QColor, QFont, QIcon
+from PyQt5.QtCore import Qt, QSize
 import sys
+import os
 import matplotlib
 matplotlib.use('Qt5Agg')
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -13,6 +14,8 @@ from matplotlib.figure import Figure
 from db_config import get_connection
 from members import MembersPage
 from books import BooksPage
+from PyQt5.QtGui import QMovie
+from borrow_return import BorrowReturnPage
 
 class SidebarButton(QPushButton):
     def __init__(self, icon_path, text):
@@ -175,11 +178,10 @@ class BarChartCanvas(FigureCanvas):
             self.ax.text(0.5, 0.5, "DB Error", color='white', ha='center')
             self.draw()
 
-
 class Dashboard(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Coddy Library Management System")
+        self.setWindowTitle("📚 Coddy Library Management System 📚")
         self.resize(1200,800)
         self.setMinimumSize(1000,700)
         self.setStyleSheet("background-color: #0a0f2c;")
@@ -226,6 +228,7 @@ class Dashboard(QMainWindow):
         self.stack.addWidget(self.create_dashboard_page())  # index 0
         self.stack.addWidget(MembersPage()) 
         self.stack.addWidget(BooksPage()) # index 1
+        self.stack.addWidget(BorrowReturnPage()) #index 2
 
         main_layout.addWidget(sidebar_frame)
         main_layout.addWidget(self.stack)
@@ -235,9 +238,13 @@ class Dashboard(QMainWindow):
         content_layout = QVBoxLayout()
         content_layout.setContentsMargins(20, 20, 20, 20)
 
-        # Top bar
+        # Top bar with search + refresh
         top_bar = QHBoxLayout()
+        welcome_label = QLabel("Welcome to Coddy Library Dashboard")
+        welcome_label.setStyleSheet("color: white; font-size: 24px; font-weight: bold;")
+        top_bar.addWidget(welcome_label)
         top_bar.addStretch()
+
         search_input = QLineEdit()
         search_input.setPlaceholderText("Search books, members…")
         search_input.setStyleSheet("""
@@ -251,6 +258,21 @@ class Dashboard(QMainWindow):
             }
         """)
         top_bar.addWidget(search_input)
+
+        refresh_button = QPushButton("♻️")
+        refresh_button.setStyleSheet("""
+            QPushButton {
+                color: white;
+                background-color: #1E90FF;
+                border-radius: 8px;
+                padding: 6px 12px;
+            }
+            QPushButton:hover {
+                background-color: #00BFFF;
+            }
+        """)
+        refresh_button.clicked.connect(self.update_stats)
+        top_bar.addWidget(refresh_button)
         content_layout.addLayout(top_bar)
 
         stats_layout = QHBoxLayout()
@@ -264,8 +286,6 @@ class Dashboard(QMainWindow):
         stats_layout.addWidget(self.card_overdue)
         stats_layout.addWidget(self.card_members)
         content_layout.addLayout(stats_layout)
-
-        self.update_stats()
 
         table = QTableWidget()
         table.setColumnCount(2)
@@ -299,39 +319,48 @@ class Dashboard(QMainWindow):
         content_layout.addWidget(table)
 
         chart_layout = QHBoxLayout()
-        pie_chart = PieChartCanvas()
-        bar_chart = BarChartCanvas()
-        chart_layout.addWidget(pie_chart)
-        chart_layout.addWidget(bar_chart)
+        self.pie_chart = PieChartCanvas()
+        self.bar_chart = BarChartCanvas()
+        chart_layout.addWidget(self.pie_chart)
+        chart_layout.addWidget(self.bar_chart)
 
         content_layout.addSpacing(20)
         content_layout.addLayout(chart_layout)
+
+        self.update_stats()
 
         page.setLayout(content_layout)
         return page
 
     def update_stats(self):
-        conn = get_connection()
-        cursor = conn.cursor()
+        try:
+            conn = get_connection()
+            cursor = conn.cursor()
 
-        cursor.execute("SELECT COUNT(*) FROM books")
-        total_books = cursor.fetchone()[0]
+            cursor.execute("SELECT COUNT(*) FROM books")
+            total_books = cursor.fetchone()[0]
 
-        cursor.execute("SELECT COUNT(*) FROM transactions WHERE returned = 0")
-        active_loans = cursor.fetchone()[0]
+            cursor.execute("SELECT COUNT(*) FROM transactions WHERE returned = 0")
+            active_loans = cursor.fetchone()[0]
 
-        cursor.execute("SELECT COUNT(*) FROM transactions WHERE returned = 0 AND return_date < CURDATE()")
-        overdue = cursor.fetchone()[0]
+            cursor.execute("SELECT COUNT(*) FROM transactions WHERE returned = 0 AND return_date < CURDATE()")
+            overdue = cursor.fetchone()[0]
 
-        cursor.execute("SELECT COUNT(*) FROM members")
-        members = cursor.fetchone()[0]
+            cursor.execute("SELECT COUNT(*) FROM members")
+            members = cursor.fetchone()[0]
 
-        conn.close()
+            conn.close()
 
-        self.card_books.set_value(total_books)
-        self.card_loans.set_value(active_loans)
-        self.card_overdue.set_value(overdue)
-        self.card_members.set_value(members)
+            self.card_books.set_value(total_books)
+            self.card_loans.set_value(active_loans)
+            self.card_overdue.set_value(overdue)
+            self.card_members.set_value(members)
+            self.pie_chart.plot_pie()
+            self.bar_chart.plot_bar()
+
+
+        except Exception as e:
+            print("Error updating stats:", e)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

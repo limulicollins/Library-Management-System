@@ -25,7 +25,7 @@ class MembersPage(QWidget):
         # --- Top Section: Title and Search ---
         top_layout = QHBoxLayout()
         title = QLabel("Members Management")
-        title.setStyleSheet("color: #00FFFF; font-size: 30px;")
+        title.setStyleSheet("color: #00FFFF; font-size: 30px; font-weight: bold;")
         self.search_bar = QLineEdit()
         self.search_bar.setPlaceholderText("Search by name or ID")
         self.search_bar.setStyleSheet(
