@@ -16,42 +16,21 @@ from members import MembersPage
 from books import BooksPage
 from PyQt5.QtGui import QMovie
 from borrow_return import BorrowReturnPage
+from fines import FinesPage
+from style import shared_stylesheet
 
 class SidebarButton(QPushButton):
     def __init__(self, icon_path, text):
         super().__init__(text)
+        self.setStyleSheet(shared_stylesheet)
         self.setIcon(QIcon(icon_path))
         self.setIconSize(QSize(24, 24))
-        self.setStyleSheet("""
-            QPushButton {
-                background-color: transparent;
-                color: white;
-                font-size: 16px;
-                padding: 10px;
-                text-align: left;
-            }
-            QPushButton:hover {
-                background-color: #00FFFF;
-                color: black;
-            }
-            QPushButton:checked {
-                background-color: #00FFFF;
-                color: black;
-            }
-        """)
         self.setCheckable(True)
         self.setAutoExclusive(True)
 
 class StatsCard(QFrame):
     def __init__(self, title, icon_path, value):
         super().__init__()
-        self.setStyleSheet("""
-            QFrame {
-                background-color: #2A2A2A;
-                border-left: 5px solid #00FFFF;
-                border-radius: 10px;
-            }
-        """)
         self.setFixedHeight(80)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         layout = QHBoxLayout()
@@ -62,9 +41,7 @@ class StatsCard(QFrame):
 
         text_layout = QVBoxLayout()
         label_title = QLabel(title)
-        label_title.setStyleSheet("color: #AAAAAA; font-size: 14px;")
         self.label_value = QLabel(value)
-        self.label_value.setStyleSheet("color: white; font-size: 22px; font-weight: bold;")
 
         text_layout.addWidget(label_title)
         text_layout.addWidget(self.label_value)
@@ -179,11 +156,13 @@ class BarChartCanvas(FigureCanvas):
             self.draw()
 
 class Dashboard(QMainWindow):
-    def __init__(self):
+    def __init__(self, db_connection):
         super().__init__()
+        self.db_connection = db_connection
         self.setWindowTitle("📚 Coddy Library Management System 📚")
         self.resize(1200,800)
         self.setMinimumSize(1000,700)
+        self.setStyleSheet(shared_stylesheet)
         self.setStyleSheet("background-color: #0a0f2c;")
 
         main_widget = QWidget()
@@ -229,6 +208,7 @@ class Dashboard(QMainWindow):
         self.stack.addWidget(MembersPage()) 
         self.stack.addWidget(BooksPage()) # index 1
         self.stack.addWidget(BorrowReturnPage()) #index 2
+        self.stack.addWidget(FinesPage(self.db_connection))  # index 3
 
         main_layout.addWidget(sidebar_frame)
         main_layout.addWidget(self.stack)
@@ -247,30 +227,9 @@ class Dashboard(QMainWindow):
 
         search_input = QLineEdit()
         search_input.setPlaceholderText("Search books, members…")
-        search_input.setStyleSheet("""
-            QLineEdit {
-                padding: 8px;
-                font-size: 14px;
-                border: 2px solid #00FFFF;
-                border-radius: 10px;
-                color: white;
-                background-color: #2E2E2E;
-            }
-        """)
         top_bar.addWidget(search_input)
 
         refresh_button = QPushButton("♻️")
-        refresh_button.setStyleSheet("""
-            QPushButton {
-                color: white;
-                background-color: #1E90FF;
-                border-radius: 8px;
-                padding: 6px 12px;
-            }
-            QPushButton:hover {
-                background-color: #00BFFF;
-            }
-        """)
         refresh_button.clicked.connect(self.update_stats)
         top_bar.addWidget(refresh_button)
         content_layout.addLayout(top_bar)
@@ -290,18 +249,6 @@ class Dashboard(QMainWindow):
         table = QTableWidget()
         table.setColumnCount(2)
         table.setHorizontalHeaderLabels(["Timestamp", "Activity"])
-        table.setStyleSheet("""
-            QHeaderView::section {
-                background-color: #00FFFF;
-                color: black;
-            }
-            QTableWidget {
-                background-color: #2A2A2A;
-                color: white;
-                font-size: 14px;
-                border-radius: 10px;
-            }
-        """)
         table.setRowCount(5)
         sample_data = [
             ("2025-06-15 10:22", "John returned 'The Hobbit'"),

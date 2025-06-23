@@ -7,25 +7,21 @@ from PyQt5.QtCore import Qt
 from db_config import get_connection
 import shutil
 import os
+from style import shared_stylesheet
 
 class BooksPage(QWidget):
     def __init__(self):
         super().__init__()
-
+        self.setStyleSheet(shared_stylesheet)
         main_layout = QVBoxLayout()
         main_layout.setContentsMargins(10, 10, 10, 10)
 
         # ─── Top: Title + Search ───
         top_layout = QHBoxLayout()
         title = QLabel("Books Management")
-        title.setStyleSheet("color: #00FFFF; font-size: 30px;")
 
         self.search_bar = QLineEdit()
         self.search_bar.setPlaceholderText("Search by title, author, or ISBN")
-        self.search_bar.setStyleSheet(
-            "padding: 8px; font-size: 14px; border: 2px solid #00FFFF; "
-            "border-radius: 10px; color: white; background-color: #2E2E2E;"
-        )
         top_layout.addWidget(title)
         top_layout.addStretch()
         top_layout.addWidget(self.search_bar)
@@ -42,7 +38,6 @@ class BooksPage(QWidget):
         self.btn_export = QPushButton("Export")
 
         for btn in [self.btn_add, self.btn_update, self.btn_delete, self.btn_clear, self.btn_export]:
-            btn.setStyleSheet("background-color: #00FFFF; color: black; font-weight: bold; padding: 10px; border-radius: 8px;")
             button_layout.addWidget(btn)
 
         main_layout.addLayout(button_layout)
@@ -66,7 +61,6 @@ class BooksPage(QWidget):
             input_field = QLineEdit()
             if is_disabled:
                 input_field.setReadOnly(True)
-                input_field.setStyleSheet("background-color: #444444; color: gray;")
             else:
                 input_field.setStyleSheet("background-color: #2E2E2E; color: white; padding: 10px; border-radius: 10px;")
             form_layout.addWidget(label)
@@ -81,7 +75,6 @@ class BooksPage(QWidget):
         label.setStyleSheet("color: white;")
         self.genre_dropdown = QComboBox()
         self.genre_dropdown.addItems(GENRES)
-        self.genre_dropdown.setStyleSheet("background-color: #2E2E2E; color: white; padding: 10px; border-radius: 10px;")
         form_layout.addWidget(label)
         form_layout.addWidget(self.genre_dropdown)
         add_form_field("Copies")
@@ -91,9 +84,7 @@ class BooksPage(QWidget):
         img_label.setStyleSheet("color: white;")
         self.cover_display = QLabel()
         self.cover_display.setFixedSize(150, 200)
-        self.cover_display.setStyleSheet("border: 2px dashed #00FFFF; background-color: #1e1e1e;")
         upload_btn = QPushButton("Upload Cover")
-        upload_btn.setStyleSheet("background-color: #00FFFF; font-weight: bold;")
         upload_btn.clicked.connect(self.upload_cover)
 
         form_layout.addWidget(img_label)
@@ -107,10 +98,6 @@ class BooksPage(QWidget):
         self.table = QTableWidget()
         self.table.setColumnCount(7)
         self.table.setHorizontalHeaderLabels(["ID", "Title", "Author", "ISBN", "Genre", "Copies", "Cover_path"])
-        self.table.setStyleSheet("""
-            QHeaderView::section { background-color: #00FFFF; color: black; }
-            QTableWidget { background-color: #2A2A2A; color: white; font-size: 14px; border-radius: 10px; }
-        """)
         content_layout.addWidget(self.table)
         main_layout.addLayout(content_layout)
 

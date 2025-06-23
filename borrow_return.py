@@ -4,13 +4,35 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt, QDate
 from db_config import get_connection
+from PyQt5.QtGui import QPixmap
+from style import shared_stylesheet
 
 class BorrowReturnPage(QWidget):
     def __init__(self):
         super().__init__()
         layout = QVBoxLayout()
+        self.setStyleSheet(shared_stylesheet)
         layout.setContentsMargins(30, 20, 30, 20)
         layout.setSpacing(20)
+
+       # === Title with Logo ===
+        title_bar = QHBoxLayout()
+
+        logo_label = QLabel()
+        logo_pixmap = QPixmap("assets/icons/borrow.png")
+        logo_label.setPixmap(logo_pixmap.scaled(32, 32, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        logo_label.setFixedSize(36, 36)
+
+        title = QLabel("Borrow & Return")
+        title.setStyleSheet("color: white; font-size: 20px; font-weight: bold;")
+        title.setAlignment(Qt.AlignVCenter | Qt.AlignCenter)
+
+        title_bar.addWidget(logo_label)
+        title_bar.addWidget(title)
+        title_bar.addStretch()
+
+        layout.addLayout(title_bar)
+
 
         # === Search section ===
         search_layout = QHBoxLayout()
@@ -80,52 +102,6 @@ class BorrowReturnPage(QWidget):
         layout.addWidget(self.loan_table)
 
         self.setLayout(layout)
-        self.setStyleSheet("""
-            QWidget {
-                background-color: #0a0f2c;
-                color: white;
-                font-family: Segoe UI, sans-serif;
-                font-size: 14px;
-            }
-
-            QLineEdit, QDateEdit {
-                background-color: #2e2e2e;
-                color: white;
-                border: 2px solid #00FFFF;
-                border-radius: 8px;
-                padding: 6px;
-            }
-
-            QPushButton {
-                background-color: #00FFFF;
-                color: black;
-                padding: 8px 16px;
-                font-weight: bold;
-                border: none;
-                border-radius: 8px;
-            }
-
-            QPushButton:hover {
-                background-color: #00cccc;
-            }
-
-            QPushButton:pressed {
-                background-color: #009999;
-            }
-
-            QTableWidget {
-                background-color: #2a2a2a;
-                color: white;
-                border: none;
-                border-radius: 8px;
-            }
-
-            QHeaderView::section {
-                background-color: #00FFFF;
-                color: black;
-                font-weight: bold;
-            }
-        """)
 
     def load_info(self):
         member_id = self.member_input.text().strip()

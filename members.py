@@ -10,10 +10,12 @@ import os
 import shutil
 from datetime import datetime
 from PIL import Image
+from style import shared_stylesheet
 
 class MembersPage(QWidget):
     def __init__(self):
         super().__init__()
+        self.setStyleSheet(shared_stylesheet)
         self.inputs = {}
         self.inputs["Photo Path"] = "" 
         self.setup_ui()
@@ -25,7 +27,6 @@ class MembersPage(QWidget):
         # --- Top Section: Title and Search ---
         top_layout = QHBoxLayout()
         title = QLabel("Members Management")
-        title.setStyleSheet("color: #00FFFF; font-size: 30px; font-weight: bold;")
         self.search_bar = QLineEdit()
         self.search_bar.setPlaceholderText("Search by name or ID")
         self.search_bar.setStyleSheet(
@@ -47,7 +48,6 @@ class MembersPage(QWidget):
         self.btn_export = QPushButton("Export")
 
         for btn in [self.btn_add, self.btn_update, self.btn_delete, self.btn_clear, self.btn_export]:
-            btn.setStyleSheet("background-color: #00FFFF; color: black; font-weight: bold; padding: 10px; border-radius: 8px;")
             button_layout.addWidget(btn)
 
         self.btn_add.clicked.connect(self.add_member)
@@ -73,7 +73,6 @@ class MembersPage(QWidget):
 
             if field == "Membership Plan":
                 widget = QComboBox()
-                widget.setStyleSheet("background-color: #2E2E2E; color: white; padding: 10px; border-radius: 10px;")
                 self.load_membership_plans(widget)
 
             elif field == "Start Date":

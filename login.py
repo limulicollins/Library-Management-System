@@ -7,11 +7,14 @@ from PyQt5.QtGui import QPixmap, QFont, QCursor, QIcon
 from PyQt5.QtCore import Qt
 from db_config import get_connection
 from dashboard import Dashboard
+from style import shared_stylesheet
 
 
 class LoginWindow(QWidget):
     def __init__(self):
         super().__init__()
+        self.db_connection = get_connection()
+        self.setStyleSheet(shared_stylesheet)
         self.setWindowTitle("📚 Coddy Library Management System 📚")
         self.resize(1200, 800)
         self.minimumSize = (1000, 700)
@@ -26,61 +29,61 @@ class LoginWindow(QWidget):
         forgot_label.setObjectName("forgotLabel")
 
         self.setStyleSheet("""
-    QWidget {
-        background-color: #0a0f2c;
-        color: #ffffff;
-        font-family: 'Orbitron', sans-serif;
-    }
+            QWidget {
+                background-color: #0a0f2c;
+                color: #ffffff;
+                font-family: 'Orbitron', sans-serif;
+            }
 
-    QLineEdit {
-        padding: 10px;
-        border: 2px solid #00bfff;
-        border-radius: 8px;
-        background-color: #1c1f3a;
-        color: #ffffff;
-        font-size: 14px;
-    }
+            QLineEdit {
+                padding: 10px;
+                border: 2px solid #00bfff;
+                border-radius: 8px;
+                background-color: #1c1f3a;
+                color: #ffffff;
+                font-size: 14px;
+            }
 
-    QLineEdit:focus {
-        border: 2px solid #00ffff;
-    }
+            QLineEdit:focus {
+                border: 2px solid #00ffff;
+            }
 
-    QPushButton {
-        background-color: #00bfff;
-        border: none;
-        padding: 10px;
-        border-radius: 8px;
-        font-weight: bold;
-        color: #0a0f2c;
-    }
+            QPushButton {
+                background-color: #00bfff;
+                border: none;
+                padding: 10px;
+                border-radius: 8px;
+                font-weight: bold;
+                color: #0a0f2c;
+            }
 
-    QPushButton:hover {
-        background-color: #00ffff;
-        color: #000;
-    }
+            QPushButton:hover {
+                background-color: #00ffff;
+                color: #000;
+            }
 
-    QLabel {
-        color: #ffffff;
-    }
+            QLabel {
+                color: #ffffff;
+            }
 
-    QLabel#titleLabel {
-        font-size: 24px;
-        color: #00ffff;
-        font-weight: bold;
-    }
+            QLabel#titleLabel {
+                font-size: 24px;
+                color: #00ffff;
+                font-weight: bold;
+            }
 
-    QLabel#forgotLabel {
-        color: #aaaaaa;
-        text-decoration: underline;
-    }
+            QLabel#forgotLabel {
+                color: #aaaaaa;
+                text-decoration: underline;
+            }
 
-    QLabel#forgotLabel:hover {
-        color: #00ffff;
-    }
-""")
+            QLabel#forgotLabel:hover {
+                color: #00ffff;
+            }
+        """)
 
         image_label = QLabel()
-        pixmap = QPixmap("assets/images/login.jpg").scaled(500, 800, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
+        pixmap = QPixmap("assets/images/login.jpg").scaled(500, 600, Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
         image_label.setPixmap(pixmap)
         image_label.setFixedWidth(600)
 
@@ -88,7 +91,7 @@ class LoginWindow(QWidget):
         form_layout.setContentsMargins(40, 60, 40, 40)
 
         title = QLabel("Welcome to Coddy Library")
-        title.setFont(QFont("Arial", 18, QFont.Bold))
+        title.setFont(QFont("Arial", 20, QFont.Bold))
         title.setAlignment(Qt.AlignCenter)
 
         # Username with icon
@@ -111,7 +114,7 @@ class LoginWindow(QWidget):
         self.password_input.setEchoMode(QLineEdit.Password)
 
         self.toggle_btn = QPushButton()
-        self.toggle_btn.setIcon(QIcon("assets/icons/hidden.png"))
+        self.toggle_btn.setIcon(QIcon("assets/icons/eyes-closed.png"))
         self.toggle_btn.setCheckable(True)
         self.toggle_btn.setFixedSize(30, 30)
         self.toggle_btn.setStyleSheet("background: transparent; border: none;")
@@ -130,7 +133,7 @@ class LoginWindow(QWidget):
         forgot_label.linkActivated.connect(self.handle_forgot)
 
         form_layout.addWidget(title)
-        form_layout.addSpacing(20)
+        form_layout.addSpacing(15)
         form_layout.addLayout(user_layout)
         form_layout.addLayout(pass_layout)
         form_layout.addWidget(login_button)
@@ -142,10 +145,10 @@ class LoginWindow(QWidget):
     def toggle_password(self):
         if self.toggle_btn.isChecked():
             self.password_input.setEchoMode(QLineEdit.Normal)
-            self.toggle_btn.setIcon(QIcon("assets/icons/eye-off.png"))
+            self.toggle_btn.setIcon(QIcon("assets/icons/eyes-closed.png"))
         else:
             self.password_input.setEchoMode(QLineEdit.Password)
-            self.toggle_btn.setIcon(QIcon("assets/icons/eye.png"))
+            self.toggle_btn.setIcon(QIcon("assets/icons/eyes-opened.png"))
 
     def handle_login(self):
         username = self.username_input.text()
@@ -157,7 +160,7 @@ class LoginWindow(QWidget):
         result = cursor.fetchone()
 
         if result:
-            self.dashboard = Dashboard()
+            self.dashboard = Dashboard(self.db_connection)
             self.dashboard.show()
             self.close()
 
