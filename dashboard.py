@@ -18,6 +18,7 @@ from PyQt5.QtGui import QMovie
 from borrow_return import BorrowReturnPage
 from fines import FinesPage
 from style import shared_stylesheet
+from reports import ReportsPage
 
 class SidebarButton(QPushButton):
     def __init__(self, icon_path, text):
@@ -183,7 +184,7 @@ class Dashboard(QMainWindow):
             ("assets/icons/borrow.png", "Borrow/Return"),
             ("assets/icons/fines.png", "Fines"),
             ("assets/icons/reports.png", "Reports"),
-            ("assets/icons/setting.png", "Settings"),
+            ("assets/icons/settings.png", "Settings"),
             ("assets/icons/logout.png", "Logout")
         ]
 
@@ -209,6 +210,8 @@ class Dashboard(QMainWindow):
         self.stack.addWidget(BooksPage()) # index 1
         self.stack.addWidget(BorrowReturnPage()) #index 2
         self.stack.addWidget(FinesPage(self.db_connection))  # index 3
+        self.reports_page = ReportsPage()
+        self.stack.addWidget(ReportsPage()) # index 4
 
         main_layout.addWidget(sidebar_frame)
         main_layout.addWidget(self.stack)
@@ -308,9 +311,3 @@ class Dashboard(QMainWindow):
 
         except Exception as e:
             print("Error updating stats:", e)
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    dashboard = Dashboard()
-    dashboard.show()
-    sys.exit(app.exec_())
