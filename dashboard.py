@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QLabel, QPushButton, QLineEdit, QTableWidget, QTableWidgetItem,
-    QFrame, QSizePolicy, QStackedWidget
+    QFrame, QSizePolicy, QStackedWidget, QMessageBox
 )
 from PyQt5.QtGui import QColor, QFont, QIcon
 from PyQt5.QtCore import Qt, QSize
@@ -19,6 +19,7 @@ from borrow_return import BorrowReturnPage
 from fines import FinesPage
 from style import shared_stylesheet
 from reports import ReportsPage
+from settings import SettingsPage
 
 class SidebarButton(QPushButton):
     def __init__(self, icon_path, text):
@@ -157,9 +158,10 @@ class BarChartCanvas(FigureCanvas):
             self.draw()
 
 class Dashboard(QMainWindow):
-    def __init__(self, db_connection):
+    def __init__(self, db_connection, username):
         super().__init__()
         self.db_connection = db_connection
+        self.logged_in_username = username
         self.setWindowTitle("📚 Coddy Library Management System 📚")
         self.resize(1200,800)
         self.setMinimumSize(1000,700)
@@ -192,7 +194,14 @@ class Dashboard(QMainWindow):
             btn = SidebarButton(icon, label)
             if i == 0:
                 btn.setChecked(True)
-            btn.clicked.connect(lambda checked, index=i: self.stack.setCurrentIndex(index))
+
+            if label == "Logout":
+                btn.clicked.connect(self.logout)
+            elif label == "Settings":
+                btn.clicked.connect(self.show_settings)
+            else:
+                btn.clicked.connect(lambda checked, index=i: self.stack.setCurrentIndex(index))
+
             sidebar.addWidget(btn)
             self.buttons.append(btn)
 
@@ -205,13 +214,16 @@ class Dashboard(QMainWindow):
 
         # Stack widget to hold different views
         self.stack = QStackedWidget()
-        self.stack.addWidget(self.create_dashboard_page())  # index 0
-        self.stack.addWidget(MembersPage()) 
-        self.stack.addWidget(BooksPage()) # index 1
-        self.stack.addWidget(BorrowReturnPage()) #index 2
-        self.stack.addWidget(FinesPage(self.db_connection))  # index 3
+        self.stack.addWidget(self.create_dashboard_page()) #main dashboard
+        self.stack.addWidget(MembersPage()) #members page
+        self.stack.addWidget(BooksPage()) # Books page
+        self.stack.addWidget(BorrowReturnPage()) #BorrowReturns page 
+        self.stack.addWidget(FinesPage(self.db_connection))  #fines page 
         self.reports_page = ReportsPage()
-        self.stack.addWidget(ReportsPage()) # index 4
+        self.stack.addWidget(ReportsPage()) #reports page 
+        self.settings_page = SettingsPage()
+        self.settings_page.load_user(self.logged_in_username, self.db_connection)
+        self.stack.addWidget(self.settings_page) #settings page
 
         main_layout.addWidget(sidebar_frame)
         main_layout.addWidget(self.stack)
@@ -223,7 +235,7 @@ class Dashboard(QMainWindow):
 
         # Top bar with search + refresh
         top_bar = QHBoxLayout()
-        welcome_label = QLabel("Welcome to Coddy Library Dashboard")
+        welcome_label = QLabel("📚Welcome to Coddy Library Dashboard📚")
         welcome_label.setStyleSheet("color: white; font-size: 24px; font-weight: bold;")
         top_bar.addWidget(welcome_label)
         top_bar.addStretch()
@@ -311,3 +323,22 @@ class Dashboard(QMainWindow):
 
         except Exception as e:
             print("Error updating stats:", e)
+
+    def show_settings(self):
+        self.stack.setCurrentWidget(self.settings_page)
+
+    def logout(self):
+        reply = QMessageBox.question(
+            self,
+            "Confirm Logout",
+            "Are you sure you want to log out?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
+
+        if reply == QMessageBox.Yes:
+            from login import LoginWindow  
+            self.login_window = LoginWindow()
+            self.login_window.show()
+            self.close()
+

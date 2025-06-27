@@ -160,14 +160,11 @@ class LoginWindow(QWidget):
         result = cursor.fetchone()
 
         if result:
-            self.dashboard = Dashboard(self.db_connection)
+            self.dashboard = Dashboard(conn, username)  
             self.dashboard.show()
             self.close()
-
         else:
             QMessageBox.warning(self, "Failed", "Invalid username or password")
-
-        conn.close()
 
     def handle_forgot(self):
         QMessageBox.information(self, "Forgot Password", "Password recovery feature coming soon.")

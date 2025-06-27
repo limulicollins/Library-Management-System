@@ -77,15 +77,8 @@ Update db_config.py with your MySQL credentials.
 Run the app:
 python main.py
 
-✅ Requirements
-Python 3.x
-MySQL Server
-PyQt5
-PyMySQL
-Matplotlib (optional for charts)
-
-Install all with:
-pip install PyQt5 PyMySQL matplotlib
+Install all requirements with:
+pip install -r requirements.txt
 
 🧪 Screenshots
 Coming soon... (You can add screenshots of your login page, dashboard, and charts.)
