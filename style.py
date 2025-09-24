@@ -2,15 +2,17 @@ shared_stylesheet = """
 QWidget {
     background-color: #0a0f2c;
     color: white;
-    font-family: Segoe UI, sans-serif;
+    font-family: 'Orbitron', sans-serif;
     font-size: 14px;
 }
 
-QLineEdit, QComboBox, QDateEdit, QTextEdit {
-    background-color: #2e2e2e;
-    color: white;
+QLineEdit, QTextEdit, QDateEdit, QComboBox {
+    padding: 8px;
+    border: 2px solid #00bfff;
     border-radius: 8px;
-    padding: 6px;
+    background-color: #1c1f3a;
+    color: #ffffff;
+    font-size: 14px;
 }
 
 QPushButton {

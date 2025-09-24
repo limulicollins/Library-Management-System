@@ -1,21 +1,19 @@
 import sys
 from PyQt5.QtWidgets import (
     QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout,
-    QVBoxLayout, QApplication, QMessageBox, QStyle
+    QVBoxLayout, QApplication, QMessageBox
 )
-from PyQt5.QtGui import QPixmap, QFont, QCursor, QIcon
+from PyQt5.QtGui import QPixmap, QFont, QIcon
 from PyQt5.QtCore import Qt
 from db_config import get_connection
 from dashboard import Dashboard
-from style import shared_stylesheet
 
 
 class LoginWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.db_connection = get_connection()
-        self.setStyleSheet(shared_stylesheet)
-        self.setWindowTitle("📚 Coddy Library Management System 📚")
+        self.setWindowTitle("📚 Limuli Library Management System 📚")
         self.resize(1200, 800)
         self.minimumSize = (1000, 700)
         self.setup_ui()
@@ -23,11 +21,6 @@ class LoginWindow(QWidget):
     def setup_ui(self):
         main_layout = QHBoxLayout()
         self.setLayout(main_layout)
-        title = QLabel("Welcome to Coddy Library")
-        title.setObjectName("titleLabel")
-        forgot_label = QLabel('<a href="#">Forgot Password?</a>')
-        forgot_label.setObjectName("forgotLabel")
-
         self.setStyleSheet("""
             QWidget {
                 background-color: #0a0f2c;
@@ -61,6 +54,10 @@ class LoginWindow(QWidget):
                 background-color: #00ffff;
                 color: #000;
             }
+                           
+            QPushButton:pressed {
+                background-color: #009999;
+            }
 
             QLabel {
                 color: #ffffff;
@@ -90,8 +87,8 @@ class LoginWindow(QWidget):
         form_layout = QVBoxLayout()
         form_layout.setContentsMargins(40, 60, 40, 40)
 
-        title = QLabel("Welcome to Coddy Library")
-        title.setFont(QFont("Arial", 20, QFont.Bold))
+        title = QLabel("Welcome to Limuli Library! 📚")
+        title.setFont(QFont("Arial", 25, QFont.Bold))
         title.setAlignment(Qt.AlignCenter)
 
         # Username with icon
@@ -114,9 +111,8 @@ class LoginWindow(QWidget):
         self.password_input.setEchoMode(QLineEdit.Password)
 
         self.toggle_btn = QPushButton()
-        self.toggle_btn.setIcon(QIcon("assets/icons/eyes-closed.png"))
         self.toggle_btn.setCheckable(True)
-        self.toggle_btn.setFixedSize(30, 30)
+        self.toggle_btn.setFixedSize(20, 20)
         self.toggle_btn.setStyleSheet("background: transparent; border: none;")
         self.toggle_btn.clicked.connect(self.toggle_password)
 

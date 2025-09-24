@@ -23,8 +23,8 @@ class FinesPage(QWidget):
 
         # Top Bar
         title_bar = QHBoxLayout()
-        title = QLabel("📄 Fines Management")
-        title.setStyleSheet("padding: 10px; color: white; font-weight: bold; font-size: 20px;")
+        title = QLabel("Fines Management")
+        title.setStyleSheet("color: white; font-size: 24px; font-weight: bold;")
         search_input = QLineEdit()
         search_input.setPlaceholderText("Search by member/book/date")
         filter_box = QComboBox()

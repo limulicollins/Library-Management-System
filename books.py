@@ -19,6 +19,7 @@ class BooksPage(QWidget):
         # ─── Top: Title + Search ───
         top_layout = QHBoxLayout()
         title = QLabel("Books Management")
+        title.setStyleSheet("color: white; font-size: 24px; font-weight: bold;")
 
         self.search_bar = QLineEdit()
         self.search_bar.setPlaceholderText("Search by title, author, or ISBN")
@@ -130,7 +131,7 @@ class BooksPage(QWidget):
         )
 
         if file_name:
-            # Step 1: Ensure 'assets/covers/' exists
+            # Ensure 'assets/covers/' exists
             cover_dir = os.path.join("assets", "covers")
             if not os.path.exists(cover_dir):
                 os.makedirs(cover_dir)
@@ -142,13 +143,13 @@ class BooksPage(QWidget):
             dest_filename = f"{title}_{isbn}{ext}"
             dest_path = os.path.join(cover_dir, dest_filename)
 
-            # Step 3: Copy image to destination
+            # Copy image to destination
             shutil.copy(file_name, dest_path)
 
-            # Step 4: Save the relative path for DB storage
+            # Save the relative path for DB storage
             self.cover_path = dest_path
 
-            # Step 5: Show the image in the UI
+            # Show the image in the UI
             pixmap = QPixmap(dest_path).scaled(150, 200, Qt.KeepAspectRatio)
             self.cover_display.setPixmap(pixmap)
 
@@ -195,7 +196,6 @@ class BooksPage(QWidget):
             self.load_books()
             print("Book added successfully.")
 
-            # Optional: Clear form
             for field in self.inputs:
                 if field != "ID":
                     self.inputs[field].clear()
@@ -232,7 +232,6 @@ class BooksPage(QWidget):
             self.load_books()
             print("Book updated successfully.")
         
-        # Optional: Clear form after update
             for field in self.inputs:
                 if field != "ID":
                     self.inputs[field].clear()
@@ -259,7 +258,6 @@ class BooksPage(QWidget):
             self.load_books()
             print("Book deleted successfully.")
 
-        # Optional: Clear form
             for field in self.inputs:
                 if field != "ID":
                     self.inputs[field].clear()

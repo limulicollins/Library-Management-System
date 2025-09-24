@@ -20,11 +20,11 @@ class BorrowReturnPage(QWidget):
 
         logo_label = QLabel()
         logo_pixmap = QPixmap("assets/icons/borrow.png")
-        logo_label.setPixmap(logo_pixmap.scaled(32, 32, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        logo_label.setPixmap(logo_pixmap.scaled(35, 35, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         logo_label.setFixedSize(36, 36)
 
         title = QLabel("Borrow & Return")
-        title.setStyleSheet("color: white; font-size: 20px; font-weight: bold;")
+        title.setStyleSheet("color: white; font-size: 24px; font-weight: bold;")
         title.setAlignment(Qt.AlignVCenter | Qt.AlignCenter)
 
         title_bar.addWidget(logo_label)

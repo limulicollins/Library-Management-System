@@ -1,10 +1,9 @@
 from PyQt5.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
+    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QLineEdit, QTableWidget, QTableWidgetItem, QFileDialog, QDateEdit, QComboBox
 )
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
-import sys
 from db_config import get_connection
 import os
 import shutil
@@ -27,6 +26,7 @@ class MembersPage(QWidget):
         # --- Top Section: Title and Search ---
         top_layout = QHBoxLayout()
         title = QLabel("Members Management")
+        title.setStyleSheet("color: white; font-size: 24px; font-weight: bold;")
         self.search_bar = QLineEdit()
         self.search_bar.setPlaceholderText("Search by name or ID")
         self.search_bar.setStyleSheet(

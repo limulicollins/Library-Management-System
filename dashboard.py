@@ -1,12 +1,10 @@
 from PyQt5.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
+    QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QLabel, QPushButton, QLineEdit, QTableWidget, QTableWidgetItem,
     QFrame, QSizePolicy, QStackedWidget, QMessageBox
 )
-from PyQt5.QtGui import QColor, QFont, QIcon
-from PyQt5.QtCore import Qt, QSize
-import sys
-import os
+from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import QSize
 import matplotlib
 matplotlib.use('Qt5Agg')
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -57,7 +55,7 @@ class StatsCard(QFrame):
 
 class PieChartCanvas(FigureCanvas):
     def __init__(self, parent=None):
-        fig = Figure(facecolor='#2A2A2A')
+        fig = Figure(facecolor='#0a0f2c')
         self.ax = fig.add_subplot(111)
         super().__init__(fig)
         self.setParent(parent)
@@ -98,7 +96,7 @@ class PieChartCanvas(FigureCanvas):
 
 class BarChartCanvas(FigureCanvas):
     def __init__(self, parent=None):
-        fig = Figure(facecolor='#2A2A2A')
+        fig = Figure(facecolor='#0a0f2c')
         self.ax = fig.add_subplot(111)
         super().__init__(fig)
         self.setParent(parent)
@@ -162,7 +160,7 @@ class Dashboard(QMainWindow):
         super().__init__()
         self.db_connection = db_connection
         self.logged_in_username = username
-        self.setWindowTitle("📚 Coddy Library Management System 📚")
+        self.setWindowTitle("📚 Limuli Library Management System 📚")
         self.resize(1200,800)
         self.setMinimumSize(1000,700)
         self.setStyleSheet(shared_stylesheet)
@@ -235,7 +233,7 @@ class Dashboard(QMainWindow):
 
         # Top bar with search + refresh
         top_bar = QHBoxLayout()
-        welcome_label = QLabel("📚Welcome to Coddy Library Dashboard📚")
+        welcome_label = QLabel("Welcome to Limuli Library Dashboard📚")
         welcome_label.setStyleSheet("color: white; font-size: 24px; font-weight: bold;")
         top_bar.addWidget(welcome_label)
         top_bar.addStretch()

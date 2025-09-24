@@ -20,8 +20,8 @@ class ReportsPage(QWidget):
     def init_ui(self):
 
         main_layout = QVBoxLayout()
-        title = QLabel("📄 Reports")
-        title.setFont(QFont("Segoe UI", 20))
+        title = QLabel("Reports")
+        title.setStyleSheet("color: white; font-size: 24px; font-weight: bold;")
         title.setAlignment(Qt.AlignLeft)
         main_layout.addWidget(title)
 

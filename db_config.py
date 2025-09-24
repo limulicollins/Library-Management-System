@@ -12,5 +12,5 @@ def get_connection():
         )
     except mysql.connector.Error as err:
         QMessageBox.critical(None, "Database Connection Error",
-                             f"Failed to connect to the database:\n{err}")
+            f"Failed to connect to the database:\n{err}")
         return None
